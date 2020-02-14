@@ -1,0 +1,173 @@
+<html>
+
+<head>
+    <style>
+        #footer {
+            page-break-after: always;
+        }
+        
+
+        
+        #heading {
+            padding: 5px;
+
+            background-color: rgb(216, 230, 176);
+        }
+    </style>
+    <title>Bootstrap Example</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <script type="text/javascript">
+
+        $(function () {
+            var models = $('#model');
+            var names = $('#name');
+            var mrps = $('#price');
+            console.log(models)
+            // var $ids = $('#id');
+            function getProduct(p) {
+                console.log(p.model)
+                $('#products').append(
+
+                    '<tr class="row">' +
+                    '<td class="list-group-item col-md-2">' + p.id + '</td>' +
+                    '<td class="list-group-item col-md-2">' + p.name + '</td>' +
+                    '<td class="list-group-item col-md-2">' + p.model + '</td>' +
+                    '<td class="list-group-item col-md-2">' + p.price + '</td>' +
+                    '<td class="list-group-item col-md-2" >' + '<button type="button" class="btn btn-secondary" id="update">Update</button>' + '</td>' +
+                    '<td class="list-group-item col-md-2">' + '<button type="button" class="btn btn-secondary" id="delete">Delete</button>' + '</td>' +
+                    '</tr>');
+
+            }
+
+            $('#view').click(function () {
+                console.log("test");
+                $.ajax({
+
+
+                    type: "GET",
+                    contentType: "application/json; charset=utf-8",
+                    url: "http://localhost:4001/one/product",
+
+                    success: function (product) {
+
+                        $.each(product, function (i, prod) {
+                            getProduct(prod);
+
+
+                        });
+
+                    },
+                    error: function () {
+
+                        alert('error view data');
+                    }
+                })
+            })
+
+            $('#insert').click(function () {
+                console.log("test");
+                var prod = {
+                    name: names.val(),
+                    price: mrps.val(),
+                    model: models.val(),
+
+                };
+                $.ajax({
+                    type: "POST",
+                    contentType: "application/json",
+                    url: 'http://localhost:4001/one/product',
+                    data: JSON.stringify(prod),
+                    success: function (product) {
+                        console.log(product);
+                        // addProduct(prod);
+                    },
+                    error: function (e) {
+                        console.log("errr>>>>>>", e)
+                    }
+
+                });
+            });
+
+            $('#delete').click(function () {
+                console.log("delete");
+                var getId = $(this).attr("id");
+                $.ajax({
+                    type: "DELETE",
+                    contentType: "application/json",
+                    url: 'http://localhost:4001/one/product',
+                    data: { id: getId },
+                    success: function () {
+                        console.log(product);
+                        $('#products' + getId).remove();
+                        // addProduct(prod);
+                    },
+                    error: function () {
+                        console.log("errr>>>>>>")
+                    }
+
+                });
+            });
+
+        });
+
+        function updateFunction() {
+            alert("You entered Update button");
+        }
+        function deleteFunction() {
+            alert("You entered Delete button");
+        }
+    </script>
+</head>
+
+<body>
+
+    <div class="container">
+        <h2 id="heading">Stock Management</h2>
+
+        <div class="form-group">
+            <label for="pname">Product Name:</label>
+            <input type="text" class="form-control" id="name">
+        </div>
+        <div class="form-group">
+            <label for="pmrp">Product Model:</label>
+            <input type="text" class="form-control" id="model">
+        </div>
+        <div class="form-group">
+            <label for="pmrp">Product MRP:</label>
+            <input type="number" class="form-control" id="price">
+        </div>
+        <button type="button" class="btn btn-primary" id="insert">Insert</button>
+        <button type=" button" class="btn btn-primary" id="view">View</button>
+        <div style="margin-top: 1em"></div>
+        <div class="overflow-auto"  style="height:50% ">
+            <table id="products" style="width: 100%">
+                <tr class="row" id="head1">
+                    <th class="col-sm-2" style="background-color:yellow;">PRODUCT No</th>
+                    <th class="col-sm-2" style="background-color:orange;">PRODUCT NAME</th>
+                    <th class="col-sm-2" style="background-color:yellow;">PRODUCT MODEL</th>
+                    <th class="col-sm-2" style="background-color:orange;">PRODUCT MRP</th>
+                </tr>
+                <!-- <tr class="row" id="head1">
+                <th class="col-sm-4" style="background-color:yellow;">1</th>
+                <th class="col-sm-4" style="background-color:orange;">Iphone</th>
+                <th class="col-sm-4" style="background-color:yellow;">2324</th>
+            </tr>
+            <tr class="row" id="head1">
+                <th class="col-sm-4" style="background-color:yellow;">2</th>
+                <th class="col-sm-4" style="background-color:orange;">Sony</th>
+                <th class="col-sm-4" style="background-color:yellow;">94747</th>
+            </tr> -->
+
+            </table>
+        </div>
+
+    </div>
+</body>
+
+</html>
